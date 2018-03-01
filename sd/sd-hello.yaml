@@ -1,0 +1,47 @@
+apiVersion: kubeless.io/v1beta1
+kind: Function
+metadata:
+  name: sdhello
+spec:
+  deps:
+  function: |+
+    import time
+    def hello():
+        print "hello world"
+        time.sleep(3)
+        return "hello world"
+  function-content-type: text
+  handler: sdhello.hello
+  runtime: python2.7
+  deployment:
+    metadata:
+      creationTimestamp: null
+    spec:
+      template:
+        metadata:
+        spec:
+          containers:
+          - image: kubeless/stackdriver:latest
+            name: kubeless
+            resources: {}
+          - name: prometheus-to-sd
+            image: gcr.io/google-containers/prometheus-to-sd:v0.2.3
+            command:
+              - /monitor
+              - --source=:http://localhost:8080
+              - --stackdriver-prefix=custom.googleapis.com
+              - --metrics-resolution=10
+              - --pod-id=$(POD_ID)
+              - --namespace-id=$(POD_NAMESPACE)
+            env:
+              - name: POD_ID
+                valueFrom:
+                  fieldRef:
+                    apiVersion: v1
+                    fieldPath: metadata.uid
+              - name: POD_NAMESPACE
+                valueFrom:
+                  fieldRef:
+                    fieldPath: metadata.namespace
+  timeout: "180"
+  type: HTTP
