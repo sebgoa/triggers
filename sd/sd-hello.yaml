@@ -30,7 +30,7 @@ spec:
               - /monitor
               - --source=:http://localhost:8080
               - --stackdriver-prefix=custom.googleapis.com
-              - --metrics-resolution=10
+              - --metrics-resolution=10s
               - --pod-id=$(POD_ID)
               - --namespace-id=$(POD_NAMESPACE)
             env:
