@@ -1,0 +1,36 @@
+
+
+kubectl create clusterrolebinding runseb-cluster-admin --clusterrole=cluster-admin --user=runseb@gmail.com
+
+kubectl create serviceaccount kubepic
+kubectl create role kubepic --verb=get,list --resource=secrets
+kubectl create rolebinding kubepic --role=kubepic --serviceaccount=default:kubepic
+
+Launch app using `kubepic` as sa
+
+
+# autoscaling with custom metrics
+
+https://cloud.google.com/kubernetes-engine/docs/tutorials/custom-metrics-autoscaling
+
+k8s 1.9
+
+add user to cluster-admin role
+
+## deploy the custom metrics adapter
+
+```
+kubectl create -f https://raw.githubusercontent.com/GoogleCloudPlatform/k8s-stackdriver/master/custom-metrics-stackdriver-adapter/adapter-beta.yaml
+```
+publish metrics by exposing them in prometheus format and adding a sidecar to do prometheus to stack driver 
+
+export prometheus metrics to stack driver using the sidecar with a deployment like so:
+
+https://github.com/GoogleCloudPlatform/k8s-stackdriver/blob/master/custom-metrics-stackdriver-adapter/examples/prometheus-to-sd/custom-metrics-prometheus-sd.yaml
+
+
+## explore metrics
+
+check: https://cloud.google.com/kubernetes-engine/docs/how-to/monitoring#metrics_explorer
+
+
