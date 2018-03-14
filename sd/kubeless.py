@@ -25,7 +25,7 @@ func_calls = prom.Counter('function_calls_total',
 func_errors = prom.Counter('function_failures_total',
                            'Number of exceptions in user function',
                            ['method'])
-func_req = prom.Gauge('function_request','Number of requests')
+func_req = prom.Gauge('function_request','Number of concurrent requests')
 
 def funcWrap(q, req):
     if req is None:
@@ -34,10 +34,10 @@ def funcWrap(q, req):
         q.put(func(req))
 
 @app.route('/', method=['GET', 'POST'])
-@func_req.track_inprogress()
 def handler():
     req = bottle.request
     method = req.method
+    func_req.inc()
     func_calls.labels(method).inc()
     with func_errors.labels(method).count_exceptions():
         with func_hist.labels(method).time():
@@ -52,9 +52,10 @@ def handler():
             if p.is_alive():
                 p.terminate()
                 p.join()
+                func_req.dec()
                 return bottle.HTTPError(408, "Timeout while processing the function")
             else:
-                func_req.track_inprogress()
+                func_req.dec()
                 return q.get()
 
 @app.get('/healthz')
