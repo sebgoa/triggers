@@ -1,0 +1,6 @@
+apiVersion: yoyo.com/v1beta1
+kind: foobar
+metadata:
+  name: test
+spec:
+  subscription: carogoasub

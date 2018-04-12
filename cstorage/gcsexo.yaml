@@ -1,0 +1,14 @@
+apiVersion: kubeless.io/v1beta1
+kind: CloudStorageTrigger
+metadata:
+  labels:
+    created-by: kubeless
+    function: slack
+  name: carogoa
+spec:
+  project: skippbox
+  functionSelector:
+    matchLabels:
+      created-by: kubeless
+      function: slack
+  subscription: carogoasub
