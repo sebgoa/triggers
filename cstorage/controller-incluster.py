@@ -20,8 +20,7 @@ GROUP = "kubeless.io"
 VERSION = "v1beta1"
 PLURAL = "cloudstoragetriggers"
 
-#config.load_incluster_config()
-config.load_kube_config()
+config.load_incluster_config()
 
 v1 = client.CoreV1Api()
 crds = client.CustomObjectsApi()
@@ -81,9 +80,9 @@ def cloudstorage(subscription, project, func_selectors):
         for svc in services.items:
             svc_url = 'http://%s.%s:%s' % (svc.metadata.name, svc.metadata.namespace, str(svc.spec.ports[0].port))
             # use line below when running in-cluster
-            #requests.post(svc_url, data=message.data)
+            requests.post(svc_url, data=message.data)
             # remove line below when running in-cluster
-            requests.post('http://192.168.99.100:31352', data= message.data)
+            #requests.post('http://192.168.99.100:31352', data= message.data)
         message.ack()
     
     sys.stdout = open(str(os.getpid()) + ".out", "a", buffering=0)

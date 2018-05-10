@@ -4,6 +4,6 @@ RUN apt-get update
 RUN apt-get install -y python-dev gcc
 RUN pip install --upgrade google-cloud-pubsub
 
-ADD listen-gcs.py /
+ADD controller-incluster.py /controller.py
 
-CMD ["python", "-u", "/listen-gcs.py"]
+CMD ["python", "-u", "/controller.py"]

@@ -1,12 +1,13 @@
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: pubsub
+  name: googlecloudstorage-trigger-controller
+  namespace: kubeless
 spec:
   template:
     metadata:
       labels:
-        app: pubsub
+        app: trigger-controller
     spec:
       volumes:
       - name: google-cloud-key
@@ -14,7 +15,7 @@ spec:
           secretName: pubsub
       containers:
       - name: subscriber
-        image: runseb/listengcs
+        image: runseb/cloudstorage
         volumeMounts:
         - name: google-cloud-key
           mountPath: /var/secrets/google

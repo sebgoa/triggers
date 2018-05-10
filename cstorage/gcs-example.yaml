@@ -3,12 +3,12 @@ kind: CloudStorageTrigger
 metadata:
   labels:
     created-by: kubeless
-    function: slack
-  name: carogoa
+    function: foo
+  name: foo
 spec:
   project: skippbox
   functionSelector:
     matchLabels:
       created-by: kubeless
-      function: slack
+      function: foo
   subscription: carogoasub
