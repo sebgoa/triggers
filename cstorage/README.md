@@ -14,3 +14,9 @@ sudo pip install --upgrade google-cloud-pubsub
 ```
 
 IAM or scope of instances.
+
+Create the google creds secrets
+
+```
+kubectl create secret generic pubsub --from-file=/path/to/key.json
+```
