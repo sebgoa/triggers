@@ -39,12 +39,9 @@ class Trigger(object):
     def any_versions(self):
         return "name=" + self.crd_name()
     
-    def subscription(self):
-        return self._spec["subscription"]
-        
-    def project(self):
-        return self._spec["project"]
-        
+    def topic(self):
+        return self._spec["topic"]
+                
     def functions(self):
         return self._spec["functionSelector"]["matchLabels"]
 
@@ -68,7 +65,7 @@ def create_selector(func_selectors):
         selector.append(keys + '=' + func_selectors[keys])
     return ",".join(selector)
 
-def event2func(subscription, project, func_selectors):
+def event2func(topic, func_selectors):
     
     def callback(message):
         sys.stdout = open(str(os.getpid()) + ".out", "a", buffering=0)
@@ -79,24 +76,34 @@ def event2func(subscription, project, func_selectors):
         services = v1.list_service_for_all_namespaces(label_selector=create_selector(func_selectors))
         for svc in services.items:
             svc_url = 'http://%s.%s:%s' % (svc.metadata.name, svc.metadata.namespace, str(svc.spec.ports[0].port))
-            requests.post(svc_url, data=message.data)
-        message.ack()
+            requests.post(svc_url, data=message.payload)
     
     sys.stdout = open(str(os.getpid()) + ".out", "a", buffering=0)
     sys.stderr = open(str(os.getpid()) + "_error.out", "a", buffering=0)
         
-    subscriber = pubsub_v1.SubscriberClient()
-    subscription_path = subscriber.subscription_path(project, subscription)
-    subscriber.subscribe(subscription_path, callback=callback)
-    
-    while True:
-        time.sleep(60)
+    def on_connect(client, userdata, flags, rc):
+        print("Connected with result code "+str(rc))
+        client.subscribe(topic)
+
+    # The callback for when a PUBLISH message is received from the server.
+    def on_message(client, userdata, msg):
+        callback(msg)
+
+    client = mqtt.Client()
+    client.on_connect = on_connect
+    client.on_message = on_message
+
+    broker_address = os.getenv("BROKER_ADDRESS", "mqtt")
+    broker_port = os.getenv("BROKER_PORT", 1883)
+
+    client.connect(broker_address, broker_port, 60)
+
+    client.loop_forever()
 
 def create_meta(trigger):
-    subscription = trigger.subscription()
+    topic = trigger.topic()
     functions = trigger.functions()
-    project = trigger.project()
-    p = Process(target=event2func, args=(subscription, project, functions,))
+    p = Process(target=event2func, args=(topic, functions,))
     p.start()
     return p
         
