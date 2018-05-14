@@ -1,0 +1,14 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: mqtt-trigger-controller
+  namespace: kubeless
+spec:
+  template:
+    metadata:
+      labels:
+        app: trigger-controller
+    spec:
+      containers:
+      - name: subscriber
+        image: runseb/mqtttcontroller

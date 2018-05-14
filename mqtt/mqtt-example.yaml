@@ -1,0 +1,13 @@
+apiVersion: kubeless.io/v1beta1
+kind: MqttTrigger
+metadata:
+  labels:
+    created-by: kubeless
+    function: foo
+  name: foo
+spec:
+  functionSelector:
+    matchLabels:
+      created-by: kubeless
+      function: foo
+  topic: kubeless 
