@@ -34,7 +34,7 @@ spec:
 ```
 
 ```
-kubectl run mqtt-controller --image=
+kubectl run mqtt-controller --image=runseb/mqtt-controller
 ```
 
 ## Create event to function binding and test
