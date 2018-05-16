@@ -11,4 +11,4 @@ spec:
     spec:
       containers:
       - name: subscriber
-        image: runseb/mqtttcontroller
+        image: runseb/mqtt-controller
