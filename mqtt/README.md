@@ -3,7 +3,7 @@
 ## Start mqtt in k8s
 
 ```
-kubectl run mqtt --image=toke/mosquito
+kubectl run mqtt --image=toke/mosquitto
 kubectl expose deployments mqtt --port 1883
 ```
 
