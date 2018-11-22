@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: googlecloudstoragesource
+  namespace: sebgoa
+spec:
+  selector:
+    matchLabels:
+      source: gcs
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+      labels:
+        source: gcs
+    spec:
+      volumes:
+      - name: google-cloud-key
+        secret:
+          secretName: pubsub
+      containers:
+      - name: subscriber
+        image: gcr.io/triggermesh/gcssource:0.0.4
+        volumeMounts:
+        - name: google-cloud-key
+          mountPath: /var/secrets/google
+        env:
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /var/secrets/google/key.json
+        - name: CHANNEL
+          value: testchannel
+        - name: PROJECT
+          value: triggermesh
+        - name: SUBSCRIPTION
+          value: knsub
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
