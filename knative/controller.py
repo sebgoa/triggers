@@ -22,13 +22,13 @@ def write_credentials():
   fh.close() 
 
 def callback(message):
-    print(message.data)
+    print(message.data.decode())
     print(sink_url)
 
     event = (
         v01.Event().
         SetContentType("application/json").
-        SetData(message.data).
+        SetData(message.data.decode()).
         SetEventID("my-id").
         SetSource("from-galaxy-far-far-away").
         SetEventTime("tomorrow").
@@ -36,7 +36,7 @@ def callback(message):
     )
     m = marshaller.NewHTTPMarshaller(
         [
-            structured.NewJSONHTTPCloudEventConverter(type(event))
+            structured.NewJSONHTTPCloudEventConverter()
         ]
     )
 
