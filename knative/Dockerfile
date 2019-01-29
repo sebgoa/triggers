@@ -9,4 +9,4 @@ RUN pip install requests
 
 ADD controller.py /controller.py
 
-CMD ["python", "-u", "/controller.py"]
+ENTRYPOINT ["python", "-u", "/controller.py"]
