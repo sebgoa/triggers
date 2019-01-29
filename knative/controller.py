@@ -27,12 +27,12 @@ def callback(message):
 
     event = (
         v01.Event().
-        WithContentType("application/json").
-        WithData(message.data).
-        WithEventID("my-id").
-        WithSource("from-galaxy-far-far-away").
-        WithEventTime("tomorrow").
-        WithEventType("cloudevent.greet.you")
+        SetContentType("application/json").
+        SetData(message.data).
+        SetEventID("my-id").
+        SetSource("from-galaxy-far-far-away").
+        SetEventTime("tomorrow").
+        SetEventType("cloudevent.greet.you")
     )
     m = marshaller.NewHTTPMarshaller(
         [

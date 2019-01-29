@@ -1,3 +1,12 @@
+## NOTES
+
+- Use ENTRYPOINT and not CMD otherwise the `--sink` will be parsed as an executable and not an argument
+- env var SINK gives you the address of the sink defined in the manifest
+- GOOGLE_APPLICATION_CREDENTIALS needs to be a file so load string as secret and write string to file
+- referencing a bucket is three hops: bucket -> topic -> subscription (which you set in pubsub menu)
+- casting cloudevent is a pain
+- need to change ImagePullPolicy of deployment created by container source controller
+
 ## IAM service account.
  
 * Create a service account in GCP console with a PubSub subscriber role.
